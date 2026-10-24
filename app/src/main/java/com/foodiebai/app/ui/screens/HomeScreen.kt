@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -45,6 +46,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import com.foodiebai.app.R
 import com.foodiebai.app.data.FoodItem
 import com.foodiebai.app.data.categories
 import com.foodiebai.app.data.popularItems
@@ -73,7 +76,7 @@ fun HomeScreen() {
     Scaffold(
         containerColor = Canvas,
         bottomBar = {
-            NavigationBar(containerColor = Color.White, tonalElevation = 4.dp) {
+            NavigationBar(containerColor = Color.White, tonalElevation = 8.dp) {
                 val labels = listOf("Home", "Menu", "Cart", "Orders", "Profile")
                 val icons = listOf(Icons.Default.Home, Icons.Default.Restaurant, Icons.Default.ShoppingBag, Icons.Default.ReceiptLong, Icons.Default.Person)
                 labels.forEachIndexed { index, label ->
@@ -129,62 +132,79 @@ private fun MenuPage(
     }
     LazyColumn(contentPadding = PaddingValues(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
         item {
-            Column(Modifier.fillMaxWidth().background(Brand).padding(horizontal = 20.dp).padding(top = 18.dp, bottom = 22.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f)) {
-                        Text(if (isHome) "GOOD FOOD, GOOD MOOD" else "MADE FRESH FOR YOU", color = Color(0xFFCBE4D1), fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.4.sp)
-                        Spacer(Modifier.height(6.dp))
-                        Text(if (isHome) "What sounds good?" else "Explore the menu", color = Color.White, fontSize = 27.sp, fontWeight = FontWeight.Bold)
+            Box(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(Brand, Color(0xFF0D5438))))) {
+                Box(Modifier.align(Alignment.TopEnd).padding(end = 22.dp, top = 4.dp).size(116.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.045f)))
+                Box(Modifier.align(Alignment.TopEnd).padding(end = 104.dp, top = 66.dp).size(34.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.06f)))
+                Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 18.dp, bottom = 20.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f)) {
+                            Text(if (isHome) "GOOD FOOD, GOOD MOOD" else "MADE FRESH FOR YOU", color = Color(0xFFCBE4D1), fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.5.sp)
+                            Spacer(Modifier.height(7.dp))
+                            Text(if (isHome) "What sounds good?" else "Explore the menu", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold, letterSpacing = (-0.5).sp)
+                            Spacer(Modifier.height(5.dp))
+                            Text("Your next favorite is a tap away", color = Color.White.copy(alpha = 0.78f), fontSize = 13.sp)
+                        }
+                        Box(Modifier.size(54.dp).clip(RoundedCornerShape(18.dp)).background(Color.White), contentAlignment = Alignment.Center) {
+                            Image(painterResource(R.drawable.ic_launcher), contentDescription = "FoodieBai logo", modifier = Modifier.fillMaxSize())
+                        }
                     }
-                    Box(Modifier.size(44.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.14f)), contentAlignment = Alignment.Center) {
-                        Icon(Icons.Default.Restaurant, contentDescription = "FoodieBai", tint = Color.White)
-                    }
-                }
-                Spacer(Modifier.height(18.dp))
-                Row(Modifier.fillMaxWidth().height(52.dp).clip(RoundedCornerShape(16.dp)).background(Color.White).padding(start = 14.dp, end = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Search, contentDescription = null, tint = Muted)
-                    Spacer(Modifier.width(10.dp))
-                    Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
-                        if (query.isEmpty()) Text("Search dishes", color = Muted, fontSize = 15.sp)
-                        BasicTextField(
-                            value = query,
-                            onValueChange = onQuery,
-                            singleLine = true,
-                            textStyle = TextStyle(color = Ink, fontSize = 16.sp),
-                            cursorBrush = SolidColor(Brand),
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                            keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
-                            modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Search dishes" }
-                        )
-                    }
-                    if (query.isNotEmpty()) IconButton(onClick = { onQuery("") }) {
-                        Icon(Icons.Default.Close, contentDescription = "Clear search", tint = Muted)
+                    Spacer(Modifier.height(18.dp))
+                    Row(Modifier.fillMaxWidth().height(54.dp).clip(RoundedCornerShape(18.dp)).background(Color.White).padding(start = 15.dp, end = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Search, contentDescription = null, tint = Muted)
+                        Spacer(Modifier.width(10.dp))
+                        Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                            if (query.isEmpty()) Text("Search dishes", color = Muted, fontSize = 15.sp)
+                            BasicTextField(
+                                value = query,
+                                onValueChange = onQuery,
+                                singleLine = true,
+                                textStyle = TextStyle(color = Ink, fontSize = 16.sp),
+                                cursorBrush = SolidColor(Brand),
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                                keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() }),
+                                modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Search dishes" }
+                            )
+                        }
+                        if (query.isNotEmpty()) IconButton(onClick = { onQuery("") }) {
+                            Icon(Icons.Default.Close, contentDescription = "Clear search", tint = Muted)
+                        }
                     }
                 }
             }
         }
         if (isHome) item {
-            Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp).clip(RoundedCornerShape(22.dp)).background(Brush.linearGradient(listOf(Color(0xFFFFE9D8), Color(0xFFFFF4E8)))).padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text("A little treat", color = Accent, fontWeight = FontWeight.Bold, fontSize = 13.sp)
-                    Spacer(Modifier.height(5.dp))
-                    Text("Freshly made,\njust for you.", color = Ink, fontWeight = FontWeight.Bold, fontSize = 22.sp, lineHeight = 27.sp)
-                    Spacer(Modifier.height(10.dp))
-                    Text("Explore all dishes  →", color = Brand, fontWeight = FontWeight.Bold, fontSize = 14.sp,
-                        modifier = Modifier.clip(RoundedCornerShape(12.dp)).clickable(onClick = onMenu).padding(vertical = 8.dp, horizontal = 2.dp))
-                }
-                Box(Modifier.size(88.dp).clip(CircleShape).background(Color(0xFFFFD2B5)), contentAlignment = Alignment.Center) {
-                    Text("\uD83C\uDF54", fontSize = 48.sp)
+            Surface(Modifier.fillMaxWidth().padding(horizontal = 18.dp), shape = RoundedCornerShape(24.dp), color = Color.Transparent, shadowElevation = 3.dp) {
+                Box(Modifier.background(Brush.linearGradient(listOf(Color(0xFFFFE6D2), Color(0xFFFFF5EA)))).padding(18.dp)) {
+                    Box(Modifier.align(Alignment.TopEnd).size(102.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.35f)))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f)) {
+                            Text("TODAY'S LITTLE JOY", color = Accent, fontWeight = FontWeight.ExtraBold, fontSize = 10.sp, letterSpacing = 1.3.sp)
+                            Spacer(Modifier.height(7.dp))
+                            Text("A little treat,\nmade just for you.", color = Ink, fontWeight = FontWeight.Bold, fontSize = 22.sp, lineHeight = 27.sp)
+                            Spacer(Modifier.height(10.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clip(RoundedCornerShape(12.dp)).clickable(onClick = onMenu).padding(vertical = 5.dp, horizontal = 2.dp)) {
+                                Text("Explore the menu", color = Brand, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                                Spacer(Modifier.width(4.dp))
+                                Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Brand, modifier = Modifier.size(17.dp))
+                            }
+                        }
+                        Box(Modifier.padding(start = 8.dp).size(86.dp).clip(CircleShape).background(Color(0xFFFFD2B5)), contentAlignment = Alignment.Center) {
+                            Text("\uD83C\uDF54", fontSize = 50.sp)
+                        }
+                    }
                 }
             }
         }
         item {
             Column(Modifier.fillMaxWidth()) {
-                Text("Browse by category", color = Ink, fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(horizontal = 18.dp))
-                Spacer(Modifier.height(8.dp))
+                Text("Find your craving", color = Ink, fontWeight = FontWeight.Bold, fontSize = 19.sp, modifier = Modifier.padding(horizontal = 18.dp))
+                Text("Something delicious for every mood", color = Muted, fontSize = 12.sp, modifier = Modifier.padding(horizontal = 18.dp, vertical = 3.dp))
+                Spacer(Modifier.height(7.dp))
                 Row(Modifier.horizontalScroll(rememberScrollState()).padding(horizontal = 18.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     (listOf("All") + categories.map { it.label } + "Steak").forEach { label ->
-                        FilterChip(selected = category == label, onClick = { onCategory(label) }, label = { Text(label) },
+                        FilterChip(selected = category == label, onClick = { onCategory(label) },
+                            label = { Text(label, fontWeight = if (category == label) FontWeight.Bold else FontWeight.Medium) },
+                            leadingIcon = { Text(categoryEmoji(label), fontSize = 15.sp) },
                             shape = RoundedCornerShape(24.dp), colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Brand, selectedLabelColor = Color.White))
                     }
                 }
@@ -196,7 +216,8 @@ private fun MenuPage(
                     Text(if (isHome) "Popular today" else "All dishes", color = Ink, fontWeight = FontWeight.Bold, fontSize = 20.sp)
                     Text("Made fresh when you order", color = Muted, fontSize = 13.sp)
                 }
-                Text("${filtered.size} items", color = Muted, fontSize = 13.sp)
+                Text("${filtered.size} items", color = Brand, fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.clip(RoundedCornerShape(20.dp)).background(PaleGreen).padding(horizontal = 11.dp, vertical = 7.dp))
             }
         }
         if (filtered.isEmpty()) item { EmptyState("No dishes found", "Try another search or category.") }
@@ -211,24 +232,35 @@ private fun MenuPage(
 
 @Composable
 private fun FoodCard(item: FoodItem, quantity: Int, modifier: Modifier = Modifier, onAdd: () -> Unit) {
-    Column(modifier.clip(RoundedCornerShape(20.dp)).background(Color.White)) {
-        Box(Modifier.fillMaxWidth().height(122.dp).background(item.tint), contentAlignment = Alignment.Center) {
-            Box(Modifier.size(88.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.42f)), contentAlignment = Alignment.Center) {
-                Text(foodEmoji(item), fontSize = 52.sp)
+    Surface(modifier, shape = RoundedCornerShape(22.dp), color = Color.White, shadowElevation = 3.dp) {
+        Column {
+            Box(Modifier.fillMaxWidth().height(132.dp).background(Brush.linearGradient(listOf(item.tint.copy(alpha = 0.72f), item.tint)))) {
+                Box(Modifier.align(Alignment.Center).size(104.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.20f)))
+                Box(Modifier.align(Alignment.Center).size(82.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.55f)), contentAlignment = Alignment.Center) {
+                    Text(foodEmoji(item), fontSize = 54.sp)
+                }
+                Text("★ 4.8", color = Ink, fontSize = 10.sp, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.TopStart).padding(9.dp).clip(RoundedCornerShape(20.dp)).background(Color.White.copy(alpha = 0.94f)).padding(horizontal = 8.dp, vertical = 5.dp))
+                Text(foodCategory(item).uppercase(), color = Brand, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 0.4.sp,
+                    modifier = Modifier.align(Alignment.TopEnd).padding(9.dp).clip(RoundedCornerShape(20.dp)).background(Color.White.copy(alpha = 0.88f)).padding(horizontal = 7.dp, vertical = 5.dp))
             }
-            Text("4.8 ★", color = Ink, fontSize = 11.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.TopStart).padding(9.dp).clip(RoundedCornerShape(10.dp)).background(Color.White.copy(alpha = 0.92f)).padding(horizontal = 8.dp, vertical = 5.dp))
-        }
-        Column(Modifier.padding(horizontal = 12.dp, vertical = 11.dp)) {
-            Text(item.name, color = Ink, fontSize = 14.sp, fontWeight = FontWeight.Bold, minLines = 2, maxLines = 2, lineHeight = 18.sp)
-            Spacer(Modifier.height(3.dp))
-            Text("Fresh · made to order", color = Muted, fontSize = 11.sp, maxLines = 1)
-            Spacer(Modifier.height(10.dp))
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("₱${item.price}", color = Brand, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.weight(1f))
-                FilledIconButton(onClick = onAdd, modifier = Modifier.size(40.dp), colors = IconButtonDefaults.filledIconButtonColors(containerColor = Brand, contentColor = Color.White)) {
-                    if (quantity > 0) Text("+$quantity", fontWeight = FontWeight.Bold, fontSize = 12.sp) else Icon(Icons.Default.Add, contentDescription = "Add ${item.name} to cart")
+            Column(Modifier.padding(horizontal = 12.dp, vertical = 12.dp)) {
+                Text(item.name, color = Ink, fontSize = 14.sp, fontWeight = FontWeight.Bold, minLines = 2, maxLines = 2, lineHeight = 18.sp)
+                Spacer(Modifier.height(2.dp))
+                Text("Fresh · made to order", color = Muted, fontSize = 10.sp, maxLines = 1)
+                Spacer(Modifier.height(9.dp))
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text("FROM", color = Muted, fontSize = 8.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.8.sp)
+                        Text("₱${item.price}", color = Brand, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
+                    }
+                    Box {
+                        FilledIconButton(onClick = onAdd, modifier = Modifier.size(38.dp), shape = CircleShape, colors = IconButtonDefaults.filledIconButtonColors(containerColor = Brand, contentColor = Color.White)) {
+                            Icon(Icons.Default.Add, contentDescription = "Add ${item.name} to cart", modifier = Modifier.size(20.dp))
+                        }
+                        if (quantity > 0) Text(quantity.toString(), color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Bold,
+                            modifier = Modifier.align(Alignment.TopEnd).offset(x = 4.dp, y = (-3).dp).clip(CircleShape).background(Accent).padding(horizontal = 5.dp, vertical = 3.dp))
+                    }
                 }
             }
         }
@@ -258,16 +290,18 @@ private fun CartPage(
             }
             LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(top = 14.dp, bottom = 12.dp)) {
                 items(selected) { food ->
-                    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp)).background(Color.White).padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Box(Modifier.size(66.dp).clip(RoundedCornerShape(15.dp)).background(food.tint), contentAlignment = Alignment.Center) { Text(foodEmoji(food), fontSize = 36.sp) }
-                        Spacer(Modifier.width(12.dp))
-                        Column(Modifier.weight(1f)) {
-                            Text(food.name, color = Ink, fontWeight = FontWeight.Bold, fontSize = 14.sp, maxLines = 2)
-                            Spacer(Modifier.height(4.dp))
-                            Text("₱${food.price} each", color = Muted, fontSize = 12.sp)
-                            Text("₱${food.price * (cart[food.name] ?: 0)}", color = Brand, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                    Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp), color = Color.White, shadowElevation = 2.dp) {
+                        Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Box(Modifier.size(66.dp).clip(RoundedCornerShape(15.dp)).background(Brush.linearGradient(listOf(food.tint.copy(alpha = 0.7f), food.tint))), contentAlignment = Alignment.Center) { Text(foodEmoji(food), fontSize = 36.sp) }
+                            Spacer(Modifier.width(12.dp))
+                            Column(Modifier.weight(1f)) {
+                                Text(food.name, color = Ink, fontWeight = FontWeight.Bold, fontSize = 14.sp, maxLines = 2)
+                                Spacer(Modifier.height(4.dp))
+                                Text("₱${food.price} each", color = Muted, fontSize = 12.sp)
+                                Text("₱${food.price * (cart[food.name] ?: 0)}", color = Brand, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                            }
+                            QuantityControl(cart[food.name] ?: 0, onDecrease = { onDecrease(food.name) }, onIncrease = { onIncrease(food.name) })
                         }
-                        QuantityControl(cart[food.name] ?: 0, onDecrease = { onDecrease(food.name) }, onIncrease = { onIncrease(food.name) })
                     }
                 }
             }
@@ -361,13 +395,15 @@ private fun ProfilePage() {
         }
         item { Text("ACCOUNT", color = Muted, fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 1.2.sp, modifier = Modifier.padding(top = 10.dp, start = 4.dp)) }
         items(details.keys.toList()) { label ->
-            Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(17.dp)).background(Color.White).clickable { selectedSection = label }.padding(horizontal = 16.dp, vertical = 15.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(40.dp).clip(RoundedCornerShape(13.dp)).background(PaleGreen), contentAlignment = Alignment.Center) {
-                    Icon(profileIcon(label), contentDescription = null, tint = Brand, modifier = Modifier.size(21.dp))
+            Surface(Modifier.fillMaxWidth().clickable { selectedSection = label }, shape = RoundedCornerShape(19.dp), color = Color.White, shadowElevation = 1.dp) {
+                Row(Modifier.padding(horizontal = 16.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(Modifier.size(40.dp).clip(RoundedCornerShape(13.dp)).background(PaleGreen), contentAlignment = Alignment.Center) {
+                        Icon(profileIcon(label), contentDescription = null, tint = Brand, modifier = Modifier.size(21.dp))
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Text(label, color = Ink, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, modifier = Modifier.weight(1f))
+                    Icon(Icons.Default.ChevronRight, contentDescription = "Open $label", tint = Muted)
                 }
-                Spacer(Modifier.width(12.dp))
-                Text(label, color = Ink, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, modifier = Modifier.weight(1f))
-                Icon(Icons.Default.ChevronRight, contentDescription = "Open $label", tint = Muted)
             }
         }
         item { Text("Version 1.0 · Made with care", color = Muted, fontSize = 12.sp, modifier = Modifier.fillMaxWidth().padding(top = 12.dp), textAlign = androidx.compose.ui.text.style.TextAlign.Center) }
@@ -424,6 +460,15 @@ private fun foodCategory(item: FoodItem): String = when {
     item.name.contains("cake", true) -> "Cake"
     item.name.contains("steak", true) -> "Steak"
     else -> "All"
+}
+
+private fun categoryEmoji(label: String): String = when (label) {
+    "Burger" -> "\uD83C\uDF54"
+    "Milk Tea" -> "\uD83E\uDDCB"
+    "Chicken" -> "\uD83C\uDF57"
+    "Cake" -> "\uD83C\uDF70"
+    "Steak" -> "\uD83E\uDD69"
+    else -> "\uD83C\uDF7D"
 }
 
 private fun foodEmoji(item: FoodItem): String = when {
